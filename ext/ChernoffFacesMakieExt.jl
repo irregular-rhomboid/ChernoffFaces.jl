@@ -5,7 +5,7 @@ using ChernoffFaces: lerp, ellipse_arc, solve_ellipse
 
 import ChernoffFaces: chernoff, chernoff!
 
-@recipe(Chernoff) do scene
+Makie.@recipe(Chernoff) do scene
     Theme(
         grid = false,
         ticks = false

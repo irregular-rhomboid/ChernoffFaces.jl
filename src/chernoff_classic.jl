@@ -1,5 +1,4 @@
-using CairoMakie
-using LinearAlgebra
+
 
 """
 Description from the OG paper:
@@ -52,7 +51,22 @@ The field `ranges` is meant to contain the desired ranges for the various parame
 1. radius to corner of face to origin. defaults to (0.3,0.8)
 2. angle of corner of face with horizontal axis. defaults to (-0.4,0.4)
 3. half vertical size of face. defaults to (0.7,0.9)
-4. width/height ratio of lower face. defaults to (1.0,1.6)
+4. width/height ratio of upper face. defaults to (1.2,2.0)
+5. width/height ration of loxer face. defaults to (1.0,1.6)
+6. length of nose. defaults to (0.1,0.5)
+7. vertical position of mouth. defaults to (0.2,0.8)
+8. curvature of mouth. defaults to (-0.3,0.9)
+9. width of mouth. defaults to (0.2,0.8)
+10. vertical position of eyes. defaults to (0.1,0.8)
+11. horizontal separation of eyes. defaults to (0.3,0.4)
+12. slant of eyes (in radians). defaults to (-0.4,0.4)
+13. width/height ration of eyes. defaults to (0.6,0.9)
+14. size of eyes. defaults to (0.1,0.4)
+15. horizontal position of pupils (relative to center of eye). defaults to (-0.1,0.1)
+16. vertical position of eyebrows. defaults to (0.2,0.6)
+17. slant of eyebrows (in radians). defaults to (-0.4,0.6)
+18. size of eyebrows. defaults to (0.4,0.8)
+
 """
 struct ChernoffFace{T} <: AbstractChernoff
     ranges::Vector{Tuple{T,T}}
@@ -79,8 +93,8 @@ function default_ranges_chernoff()
         (0.6,0.9), # # eye eccentricity
         (0.1,0.4), # eye size
         (-0.1,0.1), # pupil position
-        (0.3,0.6), # eyebrow y
+        (0.2,0.6), # eyebrow y
         (-0.4,0.6), # eyebrow slant
-        (0.4,0.6) # eyebrow size
+        (0.4,0.8) # eyebrow size
     ]
 end

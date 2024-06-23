@@ -1,3 +1,4 @@
+using GeometryBasics: Point
 
 """
     solve_ellipse(xₚ, yₚ, yᵤ, e)
@@ -31,9 +32,9 @@ Compute points on an arc of an ellipse.
 * `rot=0.0` optional rotation angle of the ellipse
 """
 function ellipse_arc(x, y, w, h, θ_1=0.0, θ_2=2π, rot=0.0)
-    pts = Point2f[(w*cos(t), h*sin(t)) for t in LinRange(θ_1,θ_2,100)]
+    pts = Point[(w*cos(t), h*sin(t)) for t in LinRange(θ_1,θ_2,100)]
     pts_rot = rotate.(pts, rot)
-    xy = Point2f(x,y)
+    xy = Point(x,y)
     for i in eachindex(pts_rot)
         pts_rot[i] += xy
     end
@@ -41,8 +42,8 @@ function ellipse_arc(x, y, w, h, θ_1=0.0, θ_2=2π, rot=0.0)
 end
 
 function rotate(p, θ)
-    A = [cos(θ) -sin(θ); sin(θ) cos(θ)]
-    return Point2f(A * p)
+    s, c = sincos(θ)
+    return Point(c*p[1] - s*p[2], s*p[1] + c*p[2])
 end
 
 lerp(t,a,b) = a + t*(b-a)

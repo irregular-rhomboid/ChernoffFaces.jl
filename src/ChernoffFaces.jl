@@ -1,13 +1,14 @@
 module ChernoffFaces
 
 using RecipesBase
-using MakieCore
-using LinearAlgebra
+#using MakieCore
 
 abstract type AbstractChernoff end
 
 include("utils.jl")
 
+include("chernoff_classic.jl")
+include("chernoff_cat.jl")
 export ChernoffFace, ChernoffCat
 
 export chernoff
