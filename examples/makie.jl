@@ -1,6 +1,7 @@
-using CairoMakie
+using GLMakie
 using ChernoffFaces
 
+chernoff(rand(18))
 
 begin
     fig = Figure(size=(700,700))

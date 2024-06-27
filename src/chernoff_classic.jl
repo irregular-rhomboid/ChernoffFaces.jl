@@ -78,23 +78,96 @@ cf_ranges(cf::ChernoffFace) = cf.ranges
 
 function default_ranges_chernoff()
     return [
-        (0.3,0.8), # radius to face corner
+        (0.5,0.9), # radius to face corner
         (-0.4,0.4), # angle to OP with horizontal
         (0.7,0.9), # vertical size of face
         (1.2,2.0), # upper face eccentricity
         (1.0,1.6), # lower face eccentricity
         (0.1,0.5), # nose length
-        (0.2,0.8), # mouth y
+        (0.4,0.8), # mouth y
         (-0.3,0.9), # mouth curvature
         (0.2,0.8), # mouth width
         (0.1,0.8), # eyes y
         (0.3,0.4), # eye separation
         (-0.4,0.4), # eye slant
-        (0.6,0.9), # # eye eccentricity
-        (0.1,0.4), # eye size
+        (0.3,0.9), # # eye eccentricity
+        (0.3,0.7), # eye size
         (-0.1,0.1), # pupil position
         (0.2,0.6), # eyebrow y
         (-0.4,0.6), # eyebrow slant
         (0.4,0.8) # eyebrow size
     ]
+end
+
+function chernoff_parts(x::AbstractVector{<:Real}, ::ChernoffFace)
+    y_p, x_p = x[1] .* sincos(x[2])
+    y_m = x[3]
+    # upper face
+    a, b, y_0, θ = solve_ellipse(x_p, y_p, y_m, x[4])
+    upper_face = ellipse_arc(0.0, y_0, a, b, θ, π-θ)
+    # lower face
+    a, b, y_0, θ = solve_ellipse(x_p, -y_p, y_m, x[5])
+    lower_face = ellipse_arc(0.0,-y_0, a, b, π+θ, 2π-θ)
+    # nose
+    nose = [(0.0,-x[6]/2), (0.0,x[6]/2)]
+    # mouth
+    mouth_y = -x[7]*x[3]*0.9
+    mouth_r = 1/x[8]
+    mouth_angle = atan(x[8]*x[9])
+    mouth = ellipse_arc(
+        0.0, mouth_y + mouth_r,
+        mouth_r,
+        mouth_r,
+        3π/2 - mouth_angle,
+        3π/2 + mouth_angle,
+    )
+    # eyes
+    eyes_y = x[10]*x[3]
+    eyes_sep = x[11]*x[3]
+    eyes_slant = x[12]
+    eyes_ecc = x[13]
+    eyes_size = x[14]*x[3]/2
+    eye_left = ellipse_arc(
+        -(eyes_sep + eyes_size)/2,
+        eyes_y,
+        eyes_size/2,
+        eyes_ecc*eyes_size/2,
+         0.0, 2π, -eyes_slant
+    )
+    eye_right = ellipse_arc(
+        (eyes_sep+eyes_size)/2,
+        eyes_y,
+        eyes_size/2,
+        eyes_ecc*eyes_size/2,
+        0.0, 2π, eyes_slant
+    )
+    #pupils
+    pupil_pos = x[15]/2
+    pupil_left = ellipse_arc(
+        -(eyes_sep+eyes_size)/2 - pupil_pos*eyes_size/2,
+        eyes_y,
+        0.1*eyes_size,
+        0.1*eyes_size
+    )
+    pupil_right = ellipse_arc(
+        (eyes_sep+eyes_size)/2 - pupil_pos*eyes_size/2,
+        eyes_y,
+        0.1*eyes_size,
+        0.1*eyes_size
+    )
+    # eyebrows
+    eyebrow_y = x[16]
+    eyebrow_slant = x[17]
+    eyebrow_size = x[18]
+    eyebrow_left = [
+        (-(eyes_sep + eyes_size)/2 - eyes_size*eyebrow_size/2,eyes_y + eyes_ecc*eyes_size*(eyebrow_y + eyebrow_slant) + 0.1),
+        (-(eyes_sep + eyes_size)/2 + eyes_size*eyebrow_size/2,eyes_y + eyes_ecc*eyes_size*(eyebrow_y - eyebrow_slant) + 0.1)
+    ]
+    eyebrow_right = [
+        ((eyes_sep + eyes_size)/2 + eyes_size*eyebrow_size/2,eyes_y + eyes_ecc*eyes_size*(eyebrow_y + eyebrow_slant) + 0.1),
+        ((eyes_sep + eyes_size)/2 - eyes_size*eyebrow_size/2, eyes_y + eyes_ecc*eyes_size*(eyebrow_y - eyebrow_slant) + 0.1)
+    ]
+    paths =  [upper_face, lower_face, nose, mouth, eye_left, eye_right, eyebrow_left, eyebrow_right]
+    fills = [pupil_left, pupil_right]
+    return paths, fills
 end

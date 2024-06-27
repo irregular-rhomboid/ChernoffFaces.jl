@@ -1,7 +1,6 @@
 module ChernoffFaces
 
 using RecipesBase
-#using MakieCore
 
 abstract type AbstractChernoff end
 
@@ -16,6 +15,5 @@ export chernoff!
 
 function chernoff end
 function chernoff! end
-
 
 end
