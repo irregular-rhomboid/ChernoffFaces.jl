@@ -16,7 +16,7 @@ ChernoffFacesMakieExt = "Makie"
 ChernoffFacesPlotsExt = "Plots"
 
 [compat]
-GeometryBasics = "0.4"
+GeometryBasics = "0.4, 0.5"
 Makie = "0.21"
 Plots = "1.40"
 RecipesBase = "1.3"
